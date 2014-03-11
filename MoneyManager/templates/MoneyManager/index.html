@@ -1,0 +1,54 @@
+{% extends "MoneyManager/base.html" %}
+
+{% block title %}
+    Money Manager
+{% endblock %}
+
+{% block header %}
+<div id="logo"><a href="{% url 'index' %}">Money Manager</a></div>
+<div id="top-navigation"><a href="/admin" id="admin-logo"></a></div>
+{% endblock %}
+
+{% block footer %}
+<div class="shell">
+    <span class="left">&copy; Project Dagobah 2014</span>
+    <span class="right">
+    	Design by <a href="#" target="_blank">KISS</a>
+    </span>
+</div>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+    <div class="box">
+    	<div class="box-head"><h2 class="left">Monthly Spending</h2></div>
+    	<div class='chart' id="month-chart"></div>
+    </div>
+    <div class="box">
+    	<div class="box-head"><h2 class="left">Yearly Spending</h2></div>
+    	<div class='chart' id="year-chart"></div>
+    </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar">
+    <!-- Box -->
+    <div class="box">
+    	<!-- Box Head -->
+    	<div class="box-head">
+    	    <h2>Quick Add</h2>
+    	</div>
+    	<!-- End Box Head-->
+    	<div class="box-content">
+	    <form action="{% url 'index' %}" method="post">
+		{% csrf_token %}
+    	        {{ form.as_p }}
+    	         <input type="submit" class="button" value="Add" />
+    	    </form>
+    	</div>
+    </div>
+    <!-- End Box -->
+</div>
+<!-- End Sidebar -->
+<div class="cl">&nbsp;</div>
+{% endblock %}
