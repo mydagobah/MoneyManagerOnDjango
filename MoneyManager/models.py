@@ -50,7 +50,8 @@ class SpenseForm(forms.ModelForm):
 	exclude = ['added_date', 'subCategory']
         labels = {
 	     'amount':     'Total ($)',
-	     'issue_date': 'Date purchased',
+	     'issue_date': 'Date spent',
+	     'owner'     : 'Owner (Optional)',
 	     'creditcard': 'Card used (Optional)',
 	     'comment':    'Comment (Optional)',
 	}
