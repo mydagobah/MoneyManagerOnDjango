@@ -38,13 +38,18 @@
 
 <!-- Sidebar -->
 <div id="sidebar">
-    <!-- Box -->
+    <div class='robot'>
+	    <div id='left-eye'></div>
+	    <div id='right-eye'></div>
+	    <div id='calendar'>
+		<select id='yoptions'></select>
+		<select id='moptions'></select>
+	    </div>
+    </div>
     <div class="box">
-    	<!-- Box Head -->
     	<div class="box-head">
     	    <h2>Quick Add</h2>
     	</div>
-    	<!-- End Box Head-->
     	<div class="box-content">
 	    <form action="{% url 'index' %}" method="post">
 		{% csrf_token %}
@@ -53,7 +58,6 @@
     	    </form>
     	</div>
     </div>
-    <!-- End Box -->
 </div>
 <!-- End Sidebar -->
 <div class="cl">&nbsp;</div>
