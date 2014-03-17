@@ -1,15 +1,13 @@
 from django.shortcuts import render
 from django.utils import timezone
 from django.http import Http404, HttpResponse
-from MoneyManager.models import SpenseForm
-from decimal import Decimal
-import dao
 import json
 
-chart_cols = [{"id": 'A', "label": 'Category', "type": 'string'},
-              {"id": 'B', "label": 'Spending', "type": 'string'}]
+from MoneyManager.models import SpenseForm
+import dao, utils
 
-# index view controller
+# display home page
+# process add spense form
 def index(request):
     if request.method == 'POST': # If the form has been submitted...
         form = SpenseForm(request.POST)
@@ -23,51 +21,49 @@ def index(request):
 
     return render(request, 'MoneyManager/index.html', {'form': form})
 
-# return json data
-def getMonthlyData(request):
-    dataByCategory = dao.getMonthlyData()
-    m_json = {}
-    m_json['cols'] = chart_cols
-    m_json['rows'] = []
+# request:  monthly spense by category
+#           month - string, the month, default to current month
+#           year  - string, the year of the month, default to current year
+# response: json formatted data
+def getMDataByCategory(request):
+    month = request.GET.get('month', str(timezone.now().month))
+    year  = request.GET.get('year', str(timezone.now().year))
+    dataByCategory = dao.getMDataByCategory(month, year)
+    data = utils.toJson('Category', dataByCategory)
 
-    for c in dataByCategory.keys():
-	row = {}
-	row['c'] = [{'v': c}, {'v': dataByCategory[c]}]
-        m_json['rows'].append(row)
+    return HttpResponse(json.dumps(data, cls=utils.DecimalEncoder), content_type='application/json')
 
-    return HttpResponse(json.dumps(m_json, cls=DecimalEncoder), content_type='application/json')
+# request:  yearly spense by category
+#           year  - string, the year, default to current year
+# response: json formatted data
+def getYDataByCategory(request):
+    year  = request.GET.get('year', str(timezone.now().month))
+    dataByCategory = dao.getYDataByCategory(year)
+    data = utils.toJson('Category', dataByCategory)
 
-# return json data
-def getYearlyData(request):
-    dataByCategory = dao.getYearlyData()
-    y_json = {}
-    y_json['cols'] = chart_cols
-    y_json['rows'] = []
+    return HttpResponse(json.dumps(data, cls=utils.DecimalEncoder), content_type='application/json')
 
-    for c in dataByCategory.keys():
-	row = {}
-	row['c'] = [{'v': c}, {'v': dataByCategory[c]}]
-        y_json['rows'].append(row)
+# request:  monthly spense by month
+#           month - string, the month, default to current month
+#           year  - string, the year of the month, default to current year
+# response: json formatted data
+def getDataByMonth(request):
+    month = request.GET.get('month', str(timezone.now().month))
+    year  = request.GET.get('year',  str(timezone.now().year))
+    dataByMonth = dao.getDataByMonth(month, year)
+    # format jason data
+    data = utils.toJson('Month', dataByMonth)
 
-    return HttpResponse(json.dumps(y_json, cls=DecimalEncoder), content_type='application/json')
+    return HttpResponse(json.dumps(data, cls=utils.DecimalEncoder), content_type='application/json')
 
+# request:  yearly spense by year
+#           year  - string, the year, default to current year
+# response: json formatted data
+def getDataByYear(request):
+    year  = request.GET.get('year', str(timezone.now().year))
+    dataByYear = dao.getDataByYear(utils.INIT_YEAR, year)
+    # format jason data
+    data = utils.toJson('Year', dataByYear)
 
-# serialize python Decimal to json number
-class DecimalEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, Decimal):
-            return float(o)
-        return super(DecimalEncoder, self).default(o)
+    return HttpResponse(json.dumps(data, cls=utils.DecimalEncoder), content_type='application/json')
 
-#----------------------------------------------
-# import data from xls/cvs files
-# def import(request):
-#     category_list = Category.objects.all()
-#     context = {'category_list': category_list}
-#     return render(request, 'MoneyManager/index.html', context)
-# 
-# # 
-# def income(request):
-#     category_list = Category.objects.all()
-#     context = {'category_list': category_list}
-#     return render(request, 'MoneyManager/index.html', context)

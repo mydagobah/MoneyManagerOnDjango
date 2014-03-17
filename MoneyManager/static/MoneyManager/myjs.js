@@ -1,10 +1,15 @@
 window.onload = init; // set onload callback function. no ()
 
+// Load the Visualization API and the piechart package.
+google.load('visualization', '1', {'packages':['corechart']});
+
+var dt = new Date();
+var curr_year  = dt.getFullYear();
+var curr_month = dt.getMonth() + 1;
+
+// initial calendar options
 function init() {
-    var dt = new Date();
-    var curr_year  = dt.getFullYear();
-    var curr_month = dt.getMonth() + 1;
-    var year_options = getYearList(2014, curr_year);
+    var year_options  = getYearList(2014, curr_year);
     var month_options = getMonthList(curr_month);
     var year_obj  = document.getElementById('yoptions');
     var month_obj = document.getElementById('moptions');
@@ -13,15 +18,32 @@ function init() {
     fillSelect(month_obj, month_options, formatMonth(curr_month));
 }
 
+// set google chart callbacks to run when the Google Visualization API is loaded.
 function drawCharts() {
-    // Load the Visualization API and the piechart package.
-    google.load('visualization', '1', {'packages':['corechart']});
-
-    // Set a callback to run when the Google Visualization API is loaded.
-    google.setOnLoadCallback(drawMonthlyChart);
-    google.setOnLoadCallback(drawYearlyChart);
+    google.setOnLoadCallback(function() {drawMonthlyChart(formatMonth(curr_month), curr_year.toString())});
+    google.setOnLoadCallback(function() {drawYearlyChart(curr_year.toString())});
+    google.setOnLoadCallback(function() {drawMChartByMonth(formatMonth(curr_month), curr_year.toString())});
+    google.setOnLoadCallback(function() {drawYChartByYear(curr_year.toString())});
 }
 
+// call back for Year select
+// update monthly and yearly charts
+function updateYCharts(sel) {
+    var year = sel.options[sel.selectedIndex].value;
+    drawYearlyChart(year);
+//TODO also upate month charts
+}
+
+// call back for Month select
+// update monthly charts
+function updateMCharts(sel) {
+    var yObj = document.getElementById('yoptions');
+    var year  = yObj.options[yObj.selectedIndex].value;
+    var month = sel.options[sel.selectedIndex].value;
+    drawMonthlyChart(month, year);
+}
+
+// TODO move to server side
 // sample data
 var sample = [
    ['Category', 'Spense'],
@@ -30,11 +52,12 @@ var sample = [
    ['Social',  200],
 ];
 
-function drawMonthlyChart() {
+function drawMonthlyChart(monthVal, yearVal) {
     var jsonData = $.ajax({
-        url: 'getMonthlyData/',
+        url: 'getMDataByCategory/',
         dataType:"json",
-        async: false
+        async: false,
+	data: {month: monthVal, year: yearVal}
     }).responseText;
 
     // Create our data table out of JSON data loaded from server.
@@ -42,7 +65,7 @@ function drawMonthlyChart() {
     var formatter = new google.visualization.NumberFormat({negativeColor: 'red', negativeParens: true, pattern: '$###,###'});
     formatter.format(data, 1);
     var options = {
-        title: 'Monthly Spending',
+        title: 'Spending by Category',
 	is3D:  true,
 	pieSliceText: 'value',
     };
@@ -52,11 +75,12 @@ function drawMonthlyChart() {
     chart.draw(data, options);
 }
 
-function drawYearlyChart() {
+function drawYearlyChart(yearVal) {
     var jsonData = $.ajax({
-        url: "getYearlyData/",
+        url: "getYDataByCategory/",
         dataType:"json",
-        async: false
+        async: false,
+	data: {year: yearVal}
     }).responseText;
 
     var data;
@@ -77,6 +101,52 @@ function drawYearlyChart() {
     var chart = new google.visualization.PieChart(document.getElementById('year-chart'));
     chart.draw(data, options);
 }
+
+function drawMChartByMonth(monthVal, yearVal) {
+    var jsonData = $.ajax({
+        url: 'getDataByMonth/',
+        dataType:"json",
+        async: false,
+	data: {month: monthVal, year: yearVal}
+    }).responseText;
+
+    // Create our data table out of JSON data loaded from server.
+    var data = new google.visualization.DataTable(jsonData);
+    //var formatter = new google.visualization.NumberFormat({negativeColor: 'red', negativeParens: true, pattern: '$###,###'});
+    //formatter.format(data, 1);
+    var options = {
+        title: 'Spending by Month',
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.ColumnChart(document.getElementById('month-table'));
+    chart.draw(data, options);
+}
+
+function drawYChartByYear(yearVal) {
+    var jsonData = $.ajax({
+        url: 'getDataByYear/',
+        dataType:"json",
+        async: false,
+	data: {year: yearVal}
+    }).responseText;
+
+    // Create our data table out of JSON data loaded from server.
+    var data = new google.visualization.DataTable(jsonData);
+    //var formatter = new google.visualization.NumberFormat({negativeColor: 'red', negativeParens: true, pattern: '$###,###'});
+    //formatter.format(data, 1);
+    var options = {
+        title: 'Spending by Month',
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.ColumnChart(document.getElementById('year-table'));
+    chart.draw(data, options);
+}
+
+// ------------------------------------------------------
+// utility functions
+// ------------------------------------------------------
 
 // fill select options
 // input  - obj: select DOM object

@@ -4,6 +4,8 @@ from MoneyManager import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'^getMonthlyData/$', views.getMonthlyData, name='mjson'),
-    url(r'^getYearlyData/$' , views.getYearlyData,  name='yjson'),
+    url(r'^getMDataByCategory/$', views.getMDataByCategory, name='mjson'),
+    url(r'^getYDataByCategory/$' , views.getYDataByCategory, name='yjson'),
+    url(r'^getDataByMonth/$', views.getDataByMonth, name='mjson'),
+    url(r'^getDataByYear/$',  views.getDataByYear, name='mjson'),
 )
