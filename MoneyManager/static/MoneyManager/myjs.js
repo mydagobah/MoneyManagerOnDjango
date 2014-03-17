@@ -116,6 +116,7 @@ function drawMChartByMonth(monthVal, yearVal) {
     //formatter.format(data, 1);
     var options = {
         title: 'Spending by Month',
+	legend: {position: "none"},
     };
 
     // Instantiate and draw our chart, passing in some options.
@@ -136,7 +137,8 @@ function drawYChartByYear(yearVal) {
     //var formatter = new google.visualization.NumberFormat({negativeColor: 'red', negativeParens: true, pattern: '$###,###'});
     //formatter.format(data, 1);
     var options = {
-        title: 'Spending by Month',
+        title: 'Spending by Year',
+	legend: {position: "none"},
     };
 
     // Instantiate and draw our chart, passing in some options.

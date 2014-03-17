@@ -1,8 +1,10 @@
 MoneyManagerOnDjango
 ====================
-Version 0.1
-
 A web tool to organize your spending or budget based on Django 1.6 framework.
+
+Version 0.8 Beta
+
+* Basic functionalities are done!
 
 Key features:
 
@@ -13,8 +15,7 @@ Key features:
 
 TODO:
 
-* Sort by different attributes
-* Utility panel
+* Test
 * Import from external files(XLS,CVS,etc.)
-
+* Export report
 

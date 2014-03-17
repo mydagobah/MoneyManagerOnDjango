@@ -28,14 +28,20 @@
 
 <div id="container">
     <div class="shell">
-        {% block main %}{% endblock %}
+	<div class="msg msg-ok">
+	    {% block message_ok %}{% endblock %}
+	</div>
+	<div class="msg msg-error">
+	    {% block message_orror %}{% endblock %}
+	</div>
+	<div id="main">
+    	    {% block main %}{% endblock %}
+	</div>
     </div>
 </div>
 
 <div id="footer">
-    <div class="shell">
-        {% block footer %}{% endblock %}
-    </div>
+    {% block footer %}{% endblock %}
 </div>
 
 </body>
