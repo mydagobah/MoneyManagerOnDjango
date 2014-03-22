@@ -25,6 +25,9 @@ body { background: url("images/dagobah.jpg") repeat right bottom; font-family: V
 #calendar select:hover { background: #a5df00; cursor: pointer; }
 #yoptions { margin: 0 0 0 45px; width: 75px;}
 #moptions { margin: 0 0 0 10px; width: 45px; }
+#message { position: relative; top: 15px; left: 50px; width: 128px; height: 65px; background: #000}
+#message { -moz-border-radius:5px;-webkit-border-radius:5px;-moz-box-shadow: 5px 5px 4px #978f6c;-webkit-box-shadow: 5px 5px 4px #6f694e;}
+#message p { font-family: "Comis Sans MS", cursive, sans-serif; font-size: 11px; color: green; padding: 5px;}
 
 /* content */
 #container { padding:10px 0 0 0;}

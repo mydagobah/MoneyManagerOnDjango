@@ -31,7 +31,12 @@ function drawCharts() {
 function updateYCharts(sel) {
     var year = sel.options[sel.selectedIndex].value;
     drawYearlyChart(year);
-//TODO also upate month charts
+    drawYChartByYear(year);
+
+    var mObj = document.getElementById('moptions');
+    var month = mObj.options[mObj.selectedIndex].value;
+    drawMonthlyChart(month, year);
+    drawMChartByMonth(month, year);
 }
 
 // call back for Month select
