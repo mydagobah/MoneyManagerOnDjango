@@ -77,6 +77,17 @@ function drawMonthlyChart(monthVal, yearVal) {
 
     // Instantiate and draw our chart, passing in some options.
     var chart = new google.visualization.PieChart(document.getElementById('month-chart'));
+
+    // select handler
+    function selectHandler() {
+        var selectedItem = chart.getSelection()[0];
+	if (selectedItem) {
+            //var value = data.getValue(selectedItem.row, selectedItem.column);
+            strBlackout();
+	}
+    }
+    google.visualization.events.addListener(chart, 'select', selectHandler);
+
     chart.draw(data, options);
 }
 
@@ -204,3 +215,22 @@ function formatMonth(month) {
 	return month.toString();
     }
 }
+
+// detail table box
+function endBlackout() {
+    $(".blackout").css("display", "none");
+    $(".msgbox").css("display", "none");
+}
+
+function strBlackout() {
+    $(".blackout").css("display", "block");
+    $(".msgbox").css("display", "block");
+}
+
+// set buttons to trigger blackout on click
+$(document).ready(function() {
+    $("#demo").click(strBlackout);
+    $(".blackout").click(endBlackout);
+    $(".closeBox").click(endBlackout);
+});
+

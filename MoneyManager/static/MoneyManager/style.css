@@ -1,5 +1,5 @@
 * { padding:0; margin:0; outline:0; }
-body { background: url("images/dagobah.jpg") repeat right bottom; font-family: Verdana, sans-serif; line-height:14px; }
+body { background: #1a1c1b url("images/dagobah.jpg") no-repeat center top; font-family: Verdana, sans-serif; line-height:14px; }
 
 .shell   { width:1000px; margin:0 auto; }
 #content { float:left; width:760px; margin-top: 0; }
@@ -8,10 +8,10 @@ body { background: url("images/dagobah.jpg") repeat right bottom; font-family: V
 #header { height:50px; }
 #header h1{ float:left; display:inline; padding-top:15px; }
 
-#logo { font-size:22px; line-height:24px; color:#fff; font-weight: normal;float: left;padding-top: 10px;}
-#logo a{ color:#fff; text-decoration: none;}
-#logo a:hover{ color:#bee; }
-#top-navigation { float:right; white-space:nowrap; color:#fff; padding-top:15px; font-size: 12px; font-weight: bold; }
+#logo { font-size:22px; line-height:24px; font-weight: normal;float: left;padding-top: 10px;}
+#logo a{ color:#bdbdbd; text-decoration: none;}
+#logo a:hover{ color:#2efe2e; }
+#top-navigation { float:right; padding-top:15px; }
 #admin-logo { background-image: url('images/admin_48.png'); display: block; width: 48px; height: 48px; padding-right:3px ;}
 
 .robot { background: url('images/robot.png') no-repeat; margin: 15px 0 0 0; width: 230px; height: 290px; display: block; }
@@ -27,7 +27,7 @@ body { background: url("images/dagobah.jpg") repeat right bottom; font-family: V
 #moptions { margin: 0 0 0 10px; width: 45px; }
 #message { position: relative; top: 15px; left: 50px; width: 128px; height: 65px; background: #000}
 #message { -moz-border-radius:5px;-webkit-border-radius:5px;-moz-box-shadow: 5px 5px 4px #978f6c;-webkit-box-shadow: 5px 5px 4px #6f694e;}
-#message p { font-family: "Comis Sans MS", cursive, sans-serif; font-size: 11px; color: green; padding: 5px;}
+#message p { font-family: "Comis Sans MS", courier, sans-serif; font-size: 11px; color: green; padding: 5px;}
 
 /* content */
 #container { padding:10px 0 0 0;}
@@ -47,13 +47,13 @@ body { background: url("images/dagobah.jpg") repeat right bottom; font-family: V
 .box-head { -moz-border-radius-topleft:5px; -moz-border-radius-topright:5px; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; }
 .box-content { padding: 0 10px 10px 10px; font-size: 13px; opacity: 0.6;}
 .box-content p { padding-top:8px; }
-.box-content label { display: block; padding: 0 0 2px 1px; }
+.box-content label { display: block; padding: 0 0 4px 1px; }
 .box-content select, input, textarea { width: 98%; font-family: Verdana, sans-serif; }
 .box-content textarea { max-width: 98%; overflow:hidden;}
 .box-content .button { background: #e6e6e6; border-radius:10px; color:#333; height: 20px; cursor:pointer; margin-top:10px; border:0;}
 .box-content .button:hover { background:rgb(66,184,221);color:#fff;}
 
-#footer {height:40px; background: #f2f2f2; opacity: 0.3; line-height:40px; color:#848484; font-size: 12px;}
+#footer {height:50px; line-height:40px; color:#848484; font-size: 12px;}
 #footer a { color:#ba4c32; text-decoration: none; cursor:pointer; }
 #footer a:hover { color:#fe2ec8; }
 
@@ -110,3 +110,31 @@ body { background: url("images/dagobah.jpg") repeat right bottom; font-family: V
 #zebra #vzebra-comedy, #zebra #vzebra-action {
     background: #dce4ff;
     border-bottom: 1px solid #d6dfff; }
+
+/* popup table */
+.blackout {
+    background-color: #000; opacity: 0.7; filter: alpha(opacity=70); height: 100%; width: 100%; position: fixed; top: 0; left: 0; z-index: 100; display: none; cursor: pointer;
+}
+.msgbox {
+    background-color: #ccc;
+    border: 1pc solid #ccc;
+    color: #000;
+    width: 30%;
+    height: 30%;
+    position: fixed;
+    top: 20%;
+    left: 15%;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 101;
+    display: none;
+    margin-left: 20%;
+}
+.closebox {
+    background-color: #cc0000;
+    color: #fff;
+    padding: 8px;
+    float: right;
+    border-radius: 3px;
+    cursor: pointer;
+}
