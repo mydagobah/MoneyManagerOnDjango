@@ -83,3 +83,26 @@ def getDataByYear(init, year):
     return data
 # End of getDataByYear
 
+
+# monthly summary by category
+# input  - the query month, string
+# output - spense: map, {category : monthly spense}
+def getCategoryData(year, month, category):
+    mnum = int(month)
+    ynum = int(year)
+    ctgr = Category.objects.filter(name = category)
+
+    # fetch all spense of the month
+    dataOfMonth = Spense.objects.filter(issue_date__year = ynum).filter(issue_date__month = mnum).filter(category_id = ctgr[0].id)
+
+    data = {}
+    data['rows'] = []
+    for d in dataOfMonth:
+	row = {}
+        row['category'] = d.category.name
+        row['value']    = d.amount
+	row['date']     = d.issue_date.strftime("%Y/%m/%d")
+	row['comment']  = d.comment
+        data['rows'].append(row)
+
+    return data

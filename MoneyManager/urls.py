@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     url(r'^getMDataByCategory/$', views.getMDataByCategory, name='mjson'),
     url(r'^getYDataByCategory/$' , views.getYDataByCategory, name='yjson'),
     url(r'^getDataByMonth/$', views.getDataByMonth, name='mjson'),
-    url(r'^getDataByYear/$',  views.getDataByYear, name='mjson'),
+    url(r'^getDataByYear/$',  views.getDataByYear, name='yjson'),
+    url(r'^getCategoryData/$',  views.getCategoryData, name='cmjson'),
 )

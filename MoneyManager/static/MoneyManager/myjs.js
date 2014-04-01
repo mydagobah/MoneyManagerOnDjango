@@ -6,6 +6,7 @@ google.load('visualization', '1', {'packages':['corechart']});
 var dt = new Date();
 var curr_year  = dt.getFullYear();
 var curr_month = dt.getMonth() + 1;
+var plot;
 
 // initial calendar options
 function init() {
@@ -82,13 +83,60 @@ function drawMonthlyChart(monthVal, yearVal) {
     function selectHandler() {
         var selectedItem = chart.getSelection()[0];
 	if (selectedItem) {
-            //var value = data.getValue(selectedItem.row, selectedItem.column);
+	    // fetch data
+            var ctgVal = data.getValue(selectedItem.row, 0);
+            var tdata = $.ajax({
+                url: 'getCategoryData/',
+                dataType:"json",
+                async: false,
+                data: {month: monthVal, year: yearVal, category: ctgVal}
+            });
+
+            td = tdata.responseJSON.rows;
+
+	    var tb  = document.getElementById('zebra').getElementsByTagName('tbody')[0];
+            clearTableRows(tb);
+            setTableRows(tb, td);
+
             strBlackout();
 	}
     }
     google.visualization.events.addListener(chart, 'select', selectHandler);
 
     chart.draw(data, options);
+}
+
+function clearTableRows(obj) {
+   for (var i = 0; i < obj.rows.length; i++) {
+       obj.deleteRow(0);
+   }
+}
+
+function setTableRows(obj, data) {
+   for (var i = 0; i < data.length; i++) {
+	var row = obj.insertRow(obj.rows.length);
+	var cell;
+        cell = row.insertCell(0);
+        cell.innerHTML = i;
+
+	cell = row.insertCell(1);
+        cell.innerHTML = data[i].category;
+
+	cell = row.insertCell(2);
+        cell.innerHTML = data[i].value;
+
+	cell = row.insertCell(3);
+        cell.innerHTML = data[i].date;
+
+	cell = row.insertCell(4);
+        cell.innerHTML = data[i].comment;
+
+	cell = row.insertCell(5);
+        cell.className = 'entry-edit';
+
+	cell = row.insertCell(6);
+        cell.className = 'entry-destory';
+   }
 }
 
 function drawYearlyChart(yearVal) {
@@ -216,21 +264,22 @@ function formatMonth(month) {
     }
 }
 
-// detail table box
+// end blackout display
 function endBlackout() {
     $(".blackout").css("display", "none");
     $(".msgbox").css("display", "none");
 }
 
+// start blackout display
 function strBlackout() {
     $(".blackout").css("display", "block");
     $(".msgbox").css("display", "block");
 }
 
-// set buttons to trigger blackout on click
+// set triggers to exit from blackout
 $(document).ready(function() {
-    $("#demo").click(strBlackout);
     $(".blackout").click(endBlackout);
-    $(".closeBox").click(endBlackout);
 });
-
+$(document).keyup(function(e) {
+    if (e.keyCode == 27) { endBlackout(); } // esc
+});

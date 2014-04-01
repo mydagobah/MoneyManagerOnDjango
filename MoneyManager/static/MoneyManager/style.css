@@ -113,28 +113,29 @@ body { background: #1a1c1b url("images/dagobah.jpg") no-repeat center top; font-
 
 /* popup table */
 .blackout {
-    background-color: #000; opacity: 0.7; filter: alpha(opacity=70); height: 100%; width: 100%; position: fixed; top: 0; left: 0; z-index: 100; display: none; cursor: pointer;
+    background-color: #000;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: none;
+    cursor: pointer;
 }
 .msgbox {
-    background-color: #ccc;
-    border: 1pc solid #ccc;
-    color: #000;
-    width: 30%;
-    height: 30%;
-    position: fixed;
-    top: 20%;
-    left: 15%;
+    background-color: #fff;
+    border: 1pc solid #fff;
     border-radius: 10px;
+    color: #000;
+    position: fixed;
+    width: 50%;
+    max-height: 80%;
+    top: 20%;
+    left: 25%;
     padding: 10px;
     z-index: 101;
     display: none;
-    margin-left: 20%;
-}
-.closebox {
-    background-color: #cc0000;
-    color: #fff;
-    padding: 8px;
-    float: right;
-    border-radius: 3px;
-    cursor: pointer;
 }
