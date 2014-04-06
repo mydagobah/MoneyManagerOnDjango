@@ -69,13 +69,16 @@ def getDataByYear(request):
 
 
 
-# request:  yearly spense by category
-#           year  - string, the year, default to current year
+# request:  monthly spense by category
+#           year     - string, the year, default to current year
+#           month    - string, the month, default to current month
+#           category - string, the category, default to Other
 # response: json formatted data
 def getCategoryData(request):
     month = request.GET.get('month', str(timezone.now().month))
     year  = request.GET.get('year',  str(timezone.now().year))
-    ctgr  = request.GET.get('category')
+    ctgr  = request.GET.get('category', 'Other')
+
     data  = dao.getCategoryData(year, month, ctgr)
 
     return HttpResponse(json.dumps(data, cls=utils.DecimalEncoder), content_type='application/json')

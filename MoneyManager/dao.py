@@ -84,22 +84,24 @@ def getDataByYear(init, year):
 # End of getDataByYear
 
 
-# monthly summary by category
-# input  - the query month, string
-# output - spense: map, {category : monthly spense}
+# monthly data by category
+# input  - the query year,     string
+#          the query month,    string
+#          the query category, string
+# output - data object sorted by date
 def getCategoryData(year, month, category):
     mnum = int(month)
     ynum = int(year)
     ctgr = Category.objects.filter(name = category)
-
-    # fetch all spense of the month
-    dataOfMonth = Spense.objects.filter(issue_date__year = ynum).filter(issue_date__month = mnum).filter(category_id = ctgr[0].id)
-
     data = {}
     data['rows'] = []
-    for d in dataOfMonth:
+
+    # fetch all spense filtered by year, month and category
+    filtered_data = Spense.objects.filter(issue_date__year = ynum).filter(issue_date__month = mnum).filter(category_id = ctgr[0].id)
+    sorted_data   = filtered_data.order_by('-issue_date', 'amount')
+
+    for d in sorted_data:
 	row = {}
-        row['category'] = d.category.name
         row['value']    = d.amount
 	row['date']     = d.issue_date.strftime("%Y/%m/%d")
 	row['comment']  = d.comment

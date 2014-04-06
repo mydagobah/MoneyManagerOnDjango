@@ -59,12 +59,8 @@ var sample = [
 ];
 
 function drawMonthlyChart(monthVal, yearVal) {
-    var jsonData = $.ajax({
-        url: 'getMDataByCategory/',
-        dataType:"json",
-        async: false,
-	data: {month: monthVal, year: yearVal}
-    }).responseText;
+    var rawData = fetchData('getMDataByCategory', {month: monthVal, year: yearVal});
+    var jsonData = rawData.responseText;
 
     // Create our data table out of JSON data loaded from server.
     var data = new google.visualization.DataTable(jsonData);
@@ -85,18 +81,18 @@ function drawMonthlyChart(monthVal, yearVal) {
 	if (selectedItem) {
 	    // fetch data
             var ctgVal = data.getValue(selectedItem.row, 0);
-            var tdata = $.ajax({
-                url: 'getCategoryData/',
-                dataType:"json",
-                async: false,
-                data: {month: monthVal, year: yearVal, category: ctgVal}
-            });
+	    var args = {month: monthVal, year: yearVal, category: ctgVal};
+            var tdata = fetchData('getCategoryData/', args);
 
             td = tdata.responseJSON.rows;
+            var caption = "";
+	    var title   = document.getElementById('caption');
+	    title.innerHTML = caption.concat("Year: ", yearVal, " Month: ", monthVal, " Category: ", ctgVal);
 
-	    var tb  = document.getElementById('zebra').getElementsByTagName('tbody')[0];
-            clearTableRows(tb);
-            setTableRows(tb, td);
+	    var table = document.getElementById('zebra');
+	    var tbody = table.getElementsByTagName('tbody')[0];
+	    clearTableRows(tbody);
+            updateTable(tbody, td);
 
             strBlackout();
 	}
@@ -107,34 +103,32 @@ function drawMonthlyChart(monthVal, yearVal) {
 }
 
 function clearTableRows(obj) {
-   for (var i = 0; i < obj.rows.length; i++) {
-       obj.deleteRow(0);
+   for (var i = obj.rows.length; i > 0; i--) {
+       obj.deleteRow(i - 1);
    }
 }
 
-function setTableRows(obj, data) {
+function updateTable(obj, data) {
+   // update rows
    for (var i = 0; i < data.length; i++) {
-	var row = obj.insertRow(obj.rows.length);
+	var row = obj.insertRow(i);
 	var cell;
         cell = row.insertCell(0);
-        cell.innerHTML = i;
+        cell.innerHTML = i + 1;
 
 	cell = row.insertCell(1);
-        cell.innerHTML = data[i].category;
-
-	cell = row.insertCell(2);
         cell.innerHTML = data[i].value;
 
-	cell = row.insertCell(3);
+	cell = row.insertCell(2);
         cell.innerHTML = data[i].date;
 
-	cell = row.insertCell(4);
+	cell = row.insertCell(3);
         cell.innerHTML = data[i].comment;
 
-	cell = row.insertCell(5);
+	cell = row.insertCell(4);
         cell.className = 'entry-edit';
 
-	cell = row.insertCell(6);
+	cell = row.insertCell(5);
         cell.className = 'entry-destory';
    }
 }
@@ -147,23 +141,7 @@ function drawYearlyChart(yearVal) {
 	data: {year: yearVal}
     }).responseText;
 
-    var data;
-    var options = {is3D: true, pieSliceText: 'value'};
-
-    if (jsonData == "{}") {
-        data = google.visualization.arrayToDataTable(sample);
-	options['title'] = 'Sample Data';
-    } else {
-        // Create our data table out of JSON data loaded from server.
-        data = new google.visualization.DataTable(jsonData);
-	options['title'] = 'Yearly Spending';
-    }
-
-    var formatter = new google.visualization.NumberFormat({prefix: '$'});
-    formatter.format(data, 1);
-    // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.PieChart(document.getElementById('year-chart'));
-    chart.draw(data, options);
+    drawPieChart(jsonData, 'Yearly Spending by Category ($)', 'year-chart');
 }
 
 function drawMChartByMonth(monthVal, yearVal) {
@@ -174,17 +152,24 @@ function drawMChartByMonth(monthVal, yearVal) {
 	data: {month: monthVal, year: yearVal}
     }).responseText;
 
-    // Create our data table out of JSON data loaded from server.
     var data = new google.visualization.DataTable(jsonData);
-    //var formatter = new google.visualization.NumberFormat({negativeColor: 'red', negativeParens: true, pattern: '$###,###'});
-    //formatter.format(data, 1);
     var options = {
-        title: 'Spending by Month',
-	legend: {position: "none"},
+        title: 'Monthly Spending Summary ($)',
+	legend: { position: "none" },
     };
-
-    // Instantiate and draw our chart, passing in some options.
     var chart = new google.visualization.ColumnChart(document.getElementById('month-table'));
+
+    // select handler
+    function selectHandler() {
+        var selectedItem = chart.getSelection()[0];
+	if (selectedItem) {
+	    // fetch data
+            var m = data.getValue(selectedItem.row, 0);
+            drawMonthlyChart(mstr2int[m], curr_year);
+	}
+    }
+    google.visualization.events.addListener(chart, 'select', selectHandler);
+
     chart.draw(data, options);
 }
 
@@ -196,18 +181,68 @@ function drawYChartByYear(yearVal) {
 	data: {year: yearVal}
     }).responseText;
 
-    // Create our data table out of JSON data loaded from server.
     var data = new google.visualization.DataTable(jsonData);
-    //var formatter = new google.visualization.NumberFormat({negativeColor: 'red', negativeParens: true, pattern: '$###,###'});
-    //formatter.format(data, 1);
     var options = {
-        title: 'Spending by Year',
-	legend: {position: "none"},
+        title: 'Yearly Spending Summary ($)',
+	legend: { position: "none" },
     };
-
-    // Instantiate and draw our chart, passing in some options.
     var chart = new google.visualization.ColumnChart(document.getElementById('year-table'));
+
+    // select handler
+    function selectHandler() {
+        var selectedItem = chart.getSelection()[0];
+	if (selectedItem) {
+	    // fetch data
+            var y = data.getValue(selectedItem.row, 0);
+	    curr_year = y;
+            drawYearlyChart(curr_year);
+	}
+    }
+    google.visualization.events.addListener(chart, 'select', selectHandler);
+
     chart.draw(data, options);
+}
+
+function drawColumnChart(jsonData, title, id) {
+    var data = new google.visualization.DataTable(jsonData);
+    var options = {
+        title: title,
+	legend: { position: "none" },
+    };
+    var chart = new google.visualization.ColumnChart(document.getElementById(id));
+
+    chart.draw(data, options);
+}
+
+function drawPieChart(jsonData, title, id) {
+    var data;
+    var options = {is3D: true, pieSliceText: 'value'};
+
+    if (jsonData == "{}") {
+        data = google.visualization.arrayToDataTable(sample);
+	options['title'] = 'Sample Data';
+    } else {
+        data = new google.visualization.DataTable(jsonData);
+	options['title'] = title;
+    }
+
+    var formatter = new google.visualization.NumberFormat({prefix: '$'});
+    formatter.format(data, 1);
+    var chart = new google.visualization.PieChart(document.getElementById(id));
+
+    chart.draw(data, options);
+}
+
+// send Ajax request to server and return json data
+function fetchData(url, args) {
+    var jsonData = $.ajax({
+	url:      url,
+  	data:     args,
+        dataType: "json",
+        async:    false
+    });
+
+    return jsonData;
 }
 
 // ------------------------------------------------------
@@ -283,3 +318,18 @@ $(document).ready(function() {
 $(document).keyup(function(e) {
     if (e.keyCode == 27) { endBlackout(); } // esc
 });
+
+var mstr2int = {
+    'Jan': '1',
+    'Feb': '2',
+    'Mar': '3',
+    'Apr': '4',
+    'May': '5',
+    'Jun': '6',
+    'Jul': '7',
+    'Aug': '8',
+    'Sep': '9',
+    'Oct': '10',
+    'Nov': '11',
+    'Dec': '12'
+};

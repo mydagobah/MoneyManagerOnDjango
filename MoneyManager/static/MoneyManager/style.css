@@ -139,3 +139,8 @@ body { background: #1a1c1b url("images/dagobah.jpg") no-repeat center top; font-
     z-index: 101;
     display: none;
 }
+.msgbox p {
+    font-color: #0000ff;
+    font-weight: bold;
+    float: left;
+}
