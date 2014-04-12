@@ -5,26 +5,39 @@
 {% endblock %}
 
 {% block header %}
-<div id="logo"><a href="{% url 'index' %}">Money Manager</a></div>
-<div id="top-navigation"><a href="/admin" id="admin-logo"></a></div>
+    <div id="logo"><a href="{% url 'index' %}">Money Manager</a></div>
+    <div id="top-navigation"><a href="/admin" id="admin-logo"></a></div>
 {% endblock %}
-
+<!--
+<div id="sidebar">
+    <div id='message'><p>Master Yoda, <br>Welcome to dagobah<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - R2D2</p></div>
+</div>
+-->
 {% block footer %}
-<span class="left">&copy; Project Dagobah 2014</span>
-<span class="right">
-	Design by <a href="#" target="_blank">KISS</a>
-</span>
+    <span class="left">&copy; Project Dagobah 2014</span>
+    <span class="right">Design by <a href="#" target="_blank">KISS</a></span>
 {% endblock %}
 
 {% block main %}
 <div class="blackout"></div>
-<div class="msgbox" id="msgbox">
+<div class="promptbox" id="listpanel">
     {% include "MoneyManager/table.html" %}
+</div>
+<div class="promptbox" id="addpanel">
+    <form action="{% url 'index' %}" method="post">
+    {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="button" value="Add" />
+    </form>
 </div>
 
 <div id="content">
     <div class="box">
-	<div class="box-head"><h2 class="left">Monthly Spending</h2></div>
+	<div class="box-head">
+	    <h2 class="left">Monthly Spending</h2>
+	    <a class="right" id='upload'></a>
+	    <a class="right" id='addbtn'></a>
+        </div>
         <div id='upper-panel'>
 	    <div id="month-chart"></div>
 	    <div id="month-table"></div>
@@ -38,31 +51,4 @@
         </div>
     </div>
 </div>
-
-<!-- Sidebar -->
-<div id="sidebar">
-    <div class='robot'>
-	    <div id='left-eye'></div>
-	    <div id='right-eye'></div>
-	    <div id='calendar'>
-		<select id='yoptions' onChange="updateYCharts(this)"></select>
-		<select id='moptions' onChange="updateMCharts(this)"></select>
-	    </div>
-	    <div id='message'><p>Master Yoda, <br>Welcome to dagobah<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - R2D2</p></div>
-    </div>
-    <div class="box">
-    	<div class="box-head">
-    	    <h2>Quick Add</h2>
-    	</div>
-    	<div class="box-content">
-	    <form action="{% url 'index' %}" method="post">
-		{% csrf_token %}
-    	        {{ form.as_p }}
-    	         <input type="submit" class="button" value="Add" />
-    	    </form>
-    	</div>
-    </div>
-</div>
-<!-- End Sidebar -->
-<div class="cl">&nbsp;</div>
 {% endblock %}

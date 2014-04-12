@@ -10,13 +10,6 @@ var plot;
 
 // initial calendar options
 function init() {
-    var year_options  = getYearList(2014, curr_year);
-    var month_options = getMonthList(curr_month);
-    var year_obj  = document.getElementById('yoptions');
-    var month_obj = document.getElementById('moptions');
-
-    fillSelect(year_obj, year_options, curr_year.toString());
-    fillSelect(month_obj, month_options, formatMonth(curr_month));
 }
 
 // set google chart callbacks to run when the Google Visualization API is loaded.
@@ -85,16 +78,14 @@ function drawMonthlyChart(monthVal, yearVal) {
             var tdata = fetchData('getCategoryData/', args);
 
             td = tdata.responseJSON.rows;
-            var caption = "";
-	    var title   = document.getElementById('caption');
-	    title.innerHTML = caption.concat("Year: ", yearVal, " Month: ", monthVal, " Category: ", ctgVal);
-
 	    var table = document.getElementById('zebra');
+	    var caption = table.getElementsByTagName('caption')[0];
+	    caption.innerHTML = 'Category - '.concat(ctgVal);
 	    var tbody = table.getElementsByTagName('tbody')[0];
 	    clearTableRows(tbody);
             updateTable(tbody, td);
 
-            strBlackout();
+            setListTable();
 	}
     }
     google.visualization.events.addListener(chart, 'select', selectHandler);
@@ -245,24 +236,35 @@ function fetchData(url, args) {
     return jsonData;
 }
 
+// end blackout display
+function endBlackout() {
+    $(".blackout").css("display", "none");
+    $(".promptbox").css("display", "none");
+}
+
+// start blackout display
+function setListTable() {
+    $(".blackout").css("display", "block");
+    $("#listpanel").css("display", "block");
+}
+
+
+function setNewTable() {
+    $(".blackout").css("display", "block");
+    $("#addpanel").css("display", "block");
+}
+
+$(document).ready(function() {
+    $(".blackout").click(endBlackout);
+    $("#addbtn").click(setNewTable);
+});
+$(document).keyup(function(e) {
+    if (e.keyCode == 27) { endBlackout(); } // esc
+});
+
 // ------------------------------------------------------
 // utility functions
 // ------------------------------------------------------
-
-// fill select options
-// input  - obj: select DOM object
-//          values: values for options
-//          selected: value as selected
-// output - none
-function fillSelect(obj, values, selected) {
-     obj.options.length = 0;
-     for (var i=0; i<values.length; i++) {
-         obj.options[i] = new Option(values[i]);
-	 if (values[i] == selected) {
-             obj.options[i].selected = true;
-	 }
-     }
-}
 
 // return a year list
 // input  - max year
@@ -298,26 +300,6 @@ function formatMonth(month) {
 	return month.toString();
     }
 }
-
-// end blackout display
-function endBlackout() {
-    $(".blackout").css("display", "none");
-    $(".msgbox").css("display", "none");
-}
-
-// start blackout display
-function strBlackout() {
-    $(".blackout").css("display", "block");
-    $(".msgbox").css("display", "block");
-}
-
-// set triggers to exit from blackout
-$(document).ready(function() {
-    $(".blackout").click(endBlackout);
-});
-$(document).keyup(function(e) {
-    if (e.keyCode == 27) { endBlackout(); } // esc
-});
 
 var mstr2int = {
     'Jan': '1',

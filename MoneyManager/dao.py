@@ -103,7 +103,7 @@ def getCategoryData(year, month, category):
     for d in sorted_data:
 	row = {}
         row['value']    = d.amount
-	row['date']     = d.issue_date.strftime("%Y/%m/%d")
+	row['date']     = d.issue_date.strftime("%Y-%m-%d")
 	row['comment']  = d.comment
         data['rows'].append(row)
 

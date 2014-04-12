@@ -49,18 +49,18 @@ class SpenseForm(forms.ModelForm):
 	fields  = ['amount', 'issue_date', 'category', 'owner', 'creditcard', 'comment']
 	exclude = ['added_date', 'subCategory']
         labels = {
-	     'amount':     'Total ($)',
+	     'amount':     '($) Total',
 	     'issue_date': 'Date spent',
-	     'owner'     : 'Owner (Optional)',
-	     'creditcard': 'Card used (Optional)',
-	     'comment':    'Comment (Optional)',
+	     'owner'     : '(optional) Owner',
+	     'creditcard': '(optional) Card used',
+	     'comment':    '(optional) Comment',
 	}
         help_texts = {
 	}
 	error_messages = {
 	}
 	widgets = {
-	    'comment': forms.Textarea(attrs={'cols':23,'rows':2})
+	    'comment': forms.Textarea()
 	}
     # add validation for amount
     def clean_amount(self):
